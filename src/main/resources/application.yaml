@@ -1,0 +1,11 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: spring-ollama
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: llama3.2:3b
