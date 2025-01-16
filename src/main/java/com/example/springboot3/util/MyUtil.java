@@ -11,4 +11,8 @@ public class MyUtil {
     public static String getKey() {
         return LocalDateTime.now().toString()+System.currentTimeMillis()/1000;
     }
+
+    public static void main(String[] args) {
+        System.out.println(getKey());
+    }
 }
