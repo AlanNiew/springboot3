@@ -1,3 +1,4 @@
+/*
 package com.example.springboot3.controller;
 
 import jakarta.annotation.Resource;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+*/
 /**
  * Author:Niu
  * Date:2025/1/4 15:23
- */
+ *//*
+
 @RestController
 public class OllamaController {
     @Resource
@@ -39,3 +42,4 @@ public class OllamaController {
         return client.prompt(msg).call().content();
     }
 }
+*/
