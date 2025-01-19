@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb; # 使用内存数据库
+    #    url: jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+  jpa:
+    #    database-platform: org.hibernate.dialect.H2Dialect  # 已经默认设置H2
+    hibernate:
+      ddl-auto: none  #使用内存数据库默认create-drop
+    show-sql: true  # 显示SQL语句
+    open-in-view: false
+  h2:
+    console:
+      enabled: true  # 启用控制台
+      path: /h2-console  # 控制台路径
+  sql:
+    init:
+      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/schema.sql
+      mode: embedded

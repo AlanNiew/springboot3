@@ -1,0 +1,14 @@
+server:
+  port: 8088
+#  ai:
+#    ollama:
+#      base-url: http://localhost:11434
+#      chat:
+#        options:
+#          model: llama3.2:3b
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web: debug
+#        http.converter: debug
