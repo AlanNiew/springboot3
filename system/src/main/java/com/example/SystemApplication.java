@@ -2,14 +2,14 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Author:${USER}
  * Date:${DATE} ${TIME}
  */
+@EnableFeignClients
 @SpringBootApplication
-@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class SystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(SystemApplication.class, args);

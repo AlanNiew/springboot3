@@ -1,10 +1,9 @@
 spring:
   application:
-    name: springboot3
+    name: system-service
   profiles:
     active:
       - dev
-      - repository-dev
-server:
-  servlet:
-    context-path: /springboot3
+#server:
+#  servlet:
+#    context-path: /springboot3
