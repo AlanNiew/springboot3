@@ -1,0 +1,20 @@
+server:
+  port: 8098
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+      discovery:
+        locator:
+          enabled: true
+    #        - id: product-service
+    #          uri: lb://product-service
+    #          predicates:
+    #            - Path=/product/**
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos 地址
