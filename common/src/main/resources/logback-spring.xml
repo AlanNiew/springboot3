@@ -13,6 +13,17 @@
     <!--是否开启LogStash插件内部日志-->
     <springProperty name="ENABLE_INNER_LOG" scope="context" source="logstash.enableInnerLog" defaultValue="false"/>
 
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <charset>UTF-8</charset>
+    </appender>
+
+
     <!--DEBUG日志输出到文件-->
     <appender name="FILE_DEBUG"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -27,11 +38,33 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--设置文件命名格式-->
-            <fileNamePattern>${LOG_FILE_PATH}/debug/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_FILE_PATH}/debug/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
             <!--设置日志文件大小，超过就重新生成文件，默认10M-->
             <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
             <!--日志文件保留天数，默认30天-->
             <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- INFO 日志输出到文件 -->
+    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 只输出 INFO 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 设置文件命名格式 -->
+            <fileNamePattern>${LOG_FILE_PATH}/info/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <!-- 设置日志文件大小，超过就重新生成文件，默认10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 日志文件保留天数，默认30天 -->
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
@@ -183,19 +216,20 @@
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.hibernate.validator" level="INFO"/>
 
+<!--    INFO 级别输出-->
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE_DEBUG"/>
+<!--        <appender-ref ref="FILE_DEBUG"/>-->
+        <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_ERROR"/>
-        <appender-ref ref="LOG_STASH_DEBUG"/>
         <appender-ref ref="LOG_STASH_ERROR"/>
     </root>
 
-    <logger name="com.macro.mall.common.log.WebLogAspect" level="DEBUG">
-        <appender-ref ref="LOG_STASH_RECORD"/>
-    </logger>
+<!--    <logger name="com.macro.mall.common.log.WebLogAspect" level="DEBUG">-->
+<!--        <appender-ref ref="LOG_STASH_RECORD"/>-->
+<!--    </logger>-->
 
-    <logger name="com.macro.mall" level="DEBUG">
-        <appender-ref ref="LOG_STASH_BUSINESS"/>
-    </logger>
+<!--    <logger name="com.macro.mall" level="DEBUG">-->
+<!--        <appender-ref ref="LOG_STASH_BUSINESS"/>-->
+<!--    </logger>-->
 </configuration>
