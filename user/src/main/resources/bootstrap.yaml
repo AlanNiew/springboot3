@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: user-service
+  profiles:
+    active: dev
+
+# 默认nacos配置文件 : ${prefix}-${spring.profiles.active}.${file-extension}
+# prefix 默认为 spring.application.name 的值
+# spring.profiles.active 即为当前环境对应的 profile
+# ile-exetension 为配置内容的数据格式,目前只支持 properties 和 yaml
+#  https://nacos.io/docs/latest/ecology/use-nacos-with-spring-cloud/?spm=5238cd80.297dad21.0.0.271de37eFH2TGx#%E5%90%AF%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86:~:text=prefix%C2%A0%E9%BB%98%E8%AE%A4%E4%B8%BA,yaml%C2%A0%E7%B1%BB%E5%9E%8B%E3%80%82

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: gateway-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos 地址
+      config:
+        server-addr: localhost:8848  # Nacos 配置中心的地址
+        namespace: public            # 命名空间（默认为 public）
+        group: DEFAULT_GROUP         # 分组（默认为 DEFAULT_GROUP）
+        file-extension: yaml         # 配置文件格式
+        refresh-enabled: true

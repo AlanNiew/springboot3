@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/system")
 public class SystemController {
+
     @Autowired
     private UserClient userClient;
     @RequestMapping("/hello")

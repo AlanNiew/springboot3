@@ -44,7 +44,7 @@
         <spring.boot.version>3.3.0</spring.boot.version>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
         <spring-ai.version>1.0.0-M3</spring-ai.version>
         <hutool.version>5.8.26</hutool.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
@@ -61,6 +61,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -83,6 +88,21 @@
             <dependency>
                 <groupId>com.example</groupId>
                 <artifactId>data_repository</artifactId>
+                <version>${springBoot3.porject.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>user</artifactId>
+                <version>${springBoot3.porject.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>gateway</artifactId>
+                <version>${springBoot3.porject.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>api</artifactId>
                 <version>${springBoot3.porject.verion}</version>
             </dependency>
             <dependency>

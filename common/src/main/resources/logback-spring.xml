@@ -18,7 +18,7 @@
             <level>INFO</level>
         </filter>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
         <charset>UTF-8</charset>
     </appender>
@@ -38,9 +38,9 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--设置文件命名格式-->
-            <fileNamePattern>${LOG_FILE_PATH}/debug/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_FILE_PATH}/%d{yyyy-MM}/debug/${APP_NAME}/%d{dd-HH}-%i.log.gz</fileNamePattern>
             <!--设置日志文件大小，超过就重新生成文件，默认10M-->
-            <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+            <maxFileSize>${LOG_FILE_MAX_SIZE:-1MB}</maxFileSize>
             <!--日志文件保留天数，默认30天-->
             <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
         </rollingPolicy>
@@ -60,9 +60,9 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 设置文件命名格式 -->
-            <fileNamePattern>${LOG_FILE_PATH}/info/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_FILE_PATH}/%d{yyyy-MM}/info/${APP_NAME}/%d{dd-HH}-%i.log.gz</fileNamePattern>
             <!-- 设置日志文件大小，超过就重新生成文件，默认10MB -->
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>1MB</maxFileSize>
             <!-- 日志文件保留天数，默认30天 -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -84,9 +84,9 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--设置文件命名格式-->
-            <fileNamePattern>${LOG_FILE_PATH}/error/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_FILE_PATH}/%d{yyyy-MM}/error/${APP_NAME}/%d{dd-HH}-%i.log.gz</fileNamePattern>
             <!--设置日志文件大小，超过就重新生成文件，默认10M-->
-            <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+            <maxFileSize>${LOG_FILE_MAX_SIZE:-1MB}</maxFileSize>
             <!--日志文件保留天数，默认30天-->
             <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
         </rollingPolicy>

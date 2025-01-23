@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * Author:${USER}
  * Date:${DATE} ${TIME}
  */
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.example.client")
 @SpringBootApplication
 public class SystemApplication {
     public static void main(String[] args) {

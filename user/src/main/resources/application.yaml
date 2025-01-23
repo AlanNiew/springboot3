@@ -1,7 +1,15 @@
+#spring:
+#  application:
+#    name: user-service
+#  profiles:
+#    active:
+#      - dev
+##      - repository-dev
+#bootstrap先加载，application后加载， 两者配置合并在一起启动项目
+server:
+  port: 8089
 spring:
-  application:
-    name: user-service
-  profiles:
-    active:
-      - dev
-      - repository-dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
