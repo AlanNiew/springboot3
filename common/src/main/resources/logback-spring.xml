@@ -222,7 +222,7 @@
 <!--        <appender-ref ref="FILE_DEBUG"/>-->
         <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_ERROR"/>
-        <appender-ref ref="LOG_STASH_ERROR"/>
+<!--        <appender-ref ref="LOG_STASH_ERROR"/>-->
     </root>
 
 <!--    <logger name="com.macro.mall.common.log.WebLogAspect" level="DEBUG">-->
