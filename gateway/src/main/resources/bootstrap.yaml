@@ -13,3 +13,12 @@ spring:
         group: DEFAULT_GROUP         # 分组（默认为 DEFAULT_GROUP）
         file-extension: yaml         # 配置文件格式
         refresh-enabled: true
+        shared-configs:
+          - data-id: share-redis.yaml
+            group: SHARE_GROUP
+            refresh: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 启用基于服务发现的路由功能
+          lower-case-service-id: true # 是否将服务ID转为小写（默认true，适配URL标准）

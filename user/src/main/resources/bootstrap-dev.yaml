@@ -10,5 +10,11 @@ spring:
         file-extension: yaml         # 配置文件格式
         shared-configs:
           - data-id: share_datasource.yaml
-            group: DEFAULT_GROUP
+            group: SHARE_GROUP
             refresh: true
+          - data-id: share-springDoc.yaml
+            group: SHARE_GROUP
+            refresh: false
+          - data-id: share-redis.yaml
+            group: SHARE_GROUP
+            refresh: false

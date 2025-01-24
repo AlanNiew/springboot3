@@ -4,6 +4,8 @@ import com.example.dao.UserRepository;
 import com.example.entity.UserDO;
 import com.example.service.UserService;
 import jakarta.annotation.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,5 +28,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDO> getUserList() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<UserDO> pageList(Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum-1, pageSize);
+        return userRepository.findAll(pageRequest);
     }
 }

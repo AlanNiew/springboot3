@@ -215,11 +215,13 @@
     <logger name="io.swagger" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.hibernate.validator" level="INFO"/>
-
-<!--    INFO 级别输出-->
+    <logger name="com.alibaba.nacos.client.naming" level="INFO"/>
+    <logger name="org.springframework.cloud.gateway" level="DEBUG"/>
+<!--    DEBUG 级别输出-->
+<!--    日志输出详细级别 DEBUG 》 INFO 》 warn 》 ERROR 》 TRACE -->
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
-<!--        <appender-ref ref="FILE_DEBUG"/>-->
+        <appender-ref ref="FILE_DEBUG"/>
         <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_ERROR"/>
 <!--        <appender-ref ref="LOG_STASH_ERROR"/>-->
