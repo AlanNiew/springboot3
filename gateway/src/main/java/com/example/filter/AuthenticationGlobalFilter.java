@@ -1,5 +1,7 @@
 package com.example.filter;
 
+import com.example.utils.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
@@ -28,11 +30,10 @@ public class AuthenticationGlobalFilter implements GlobalFilter {
         
         try {
             // 解析 Token
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(JWT_SECRET_KEY)
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//
+            Claims claims = JwtTokenUtil.parseToken(token);
+            String subject = claims.getSubject();
+            System.out.println("user subject:"+subject);
+
 //            // 提取角色或其他用户信息（如用户名）
 //            String username = claims.getSubject();
 //            String role = claims.get("role", String.class);

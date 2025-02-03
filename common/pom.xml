@@ -48,11 +48,6 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
         </dependency>
-<!--        安全认证-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.auth0</groupId>-->
 <!--            <artifactId>java-jwt</artifactId>-->
