@@ -12,6 +12,8 @@
         <module>gateway</module>
         <module>api</module>
         <module>auth</module>
+        <module>rabbitmq-provider</module>
+        <module>rabbitmq-consume</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

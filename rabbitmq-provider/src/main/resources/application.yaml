@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: rabbitmq-provider
+  profiles:
+    active:
+      - dev
