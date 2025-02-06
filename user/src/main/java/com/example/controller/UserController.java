@@ -55,4 +55,10 @@ public class UserController {
         Page<UserDO> userDOS = userService.pageList(pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(userDOS));
     }
+
+    @GetMapping("/byName/{name}")
+    public CommonResult<?> getUserByName(@PathVariable String name) {
+        UserDO user = userService.getUserByName(name);
+        return CommonResult.success(user, "查询成功");
+    }
 }

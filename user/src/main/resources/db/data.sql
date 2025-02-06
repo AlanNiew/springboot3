@@ -1,20 +1,12 @@
-INSERT INTO users (name, age) VALUES
-     ('John Doe', 30),
-     ('Jane Smith', 25),
-     ('Mike Brown', 40),
-     ('Amy Jones', 28),
-     ('Bob White', 35),
-     ('Emily Black', 27),
-     ('Tom Green', 32),
-     ('Lisa White', 29),
-     ('Kevin Brown', 36),
-     ('Sarah Green', 31),
-     ('Jim White', 33),
-     ('Mary Brown', 37),
-     ('Joe Green', 34),
-     ('Jessica White', 30),
-     ('Jennifer Brown', 38),
-     ('Kevin Green', 39),
-     ('Susan White', 26);
+INSERT INTO users (name,password, age) VALUES
+     ('John Doe', '123456', 30),
+     ('Jane Smith', 'abcdef', 28),
+     ('Mike Brown', 'qwerty', 35),
+     ('Amy White', 'zxcvbn', 27),
+     ('Tom Black', 'asdfgh', 31),
+     ('Jessica Red', 'poiuyt', 29),
+     ('Emily Blue', 'lkjhgf', 33),
+     ('David Green', 'mnbvcx', 32),
+     ('admin','$2a$10$sflyXqR78a58WN1fSRu0UOn4cgpgLpq.7czjdMcxPga2BdvwS/2JG', 17);
 
 

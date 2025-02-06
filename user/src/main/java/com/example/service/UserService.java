@@ -17,4 +17,6 @@ public interface UserService {
     List<UserDO> getUserList();
 
     Page<UserDO> pageList(Integer pageNum, Integer pageSize);
+
+    UserDO getUserByName(String name);
 }

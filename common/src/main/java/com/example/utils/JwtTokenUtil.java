@@ -16,7 +16,7 @@ import java.util.UUID;
 public class JwtTokenUtil {
 
     // 密钥：用于签名和验证JWT，应该保存在配置文件或者环境变量中
-    private static final String SECRET_KEY = SecureUtil.hmacMd5().digestHex("AlanNiew@1024"); // 密钥最好从配置文件读取
+    private static final String SECRET_KEY = SecureUtil.md5().digestHex("AlanNiew@1024"); // 密钥最好从配置文件读取
     private static final long EXPIRATION_TIME = 86400000L; // 1天过期时间（单位毫秒）
     private static final String ACCESS_TOKEN = "access_token";
     private static final String REFRESH_TOKEN = "refresh_token";

@@ -22,7 +22,14 @@
             <groupId>com.example</groupId>
             <artifactId>common</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>data_repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
         <!--        安全认证-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

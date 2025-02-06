@@ -18,4 +18,7 @@ public interface UserClient {
 
     @GetMapping("/user/all")
     CommonResult<?> getAllUser();
+
+    @GetMapping("/user/byName/{name}")
+    CommonResult<?> getUserByName(@PathVariable("name") String name);
 }
