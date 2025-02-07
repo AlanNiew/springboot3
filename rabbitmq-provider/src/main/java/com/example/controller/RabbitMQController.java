@@ -18,4 +18,10 @@ public class RabbitMQController {
         producer.sendMessage(message);
         return "Message sent: " + message;
     }
+
+    @GetMapping("/send1")
+    public String sendMessage1(@RequestParam String message) {
+        producer.sendMessage("work.queue",message);
+        return "Message sent: " + message;
+    }
 }

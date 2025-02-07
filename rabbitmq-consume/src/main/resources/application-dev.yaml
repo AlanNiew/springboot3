@@ -2,7 +2,7 @@ server:
   port: 8092
 spring:
   rabbitmq:
-    host: 192.168.18.128
+    host: 192.168.220.128
     port: 5672
     username: admin
     password: admin

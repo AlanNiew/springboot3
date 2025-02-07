@@ -13,7 +13,12 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     @Bean
-    public Queue myQueue() {
+    public Queue simpleQueue() {
         return new Queue("myQueue", false); // 队列名称为 myQueue，非持久化
+    }
+
+    @Bean
+    public Queue workQueue() {
+        return new Queue("work.queue", false); // 队列名称为 myQueue，非持久化
     }
 }
