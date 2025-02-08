@@ -14,14 +14,10 @@ public class RabbitMQController {
 
     // 发送消息的接口
     @GetMapping("/send")
-    public String sendMessage(@RequestParam String message) {
-        producer.sendMessage(message);
-        return "Message sent: " + message;
-    }
-
-    @GetMapping("/send1")
-    public String sendMessage1(@RequestParam String message) {
-        producer.sendMessage("work.queue",message);
+    public String sendMessage1(
+            @RequestParam(defaultValue = "") String exchange,
+            @RequestParam(defaultValue = "simple.queue") String queue,@RequestParam String message) {
+        producer.sendMessage(exchange,queue,message);
         return "Message sent: " + message;
     }
 }
