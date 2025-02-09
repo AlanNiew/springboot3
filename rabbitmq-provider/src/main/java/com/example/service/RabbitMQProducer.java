@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -26,9 +27,9 @@ public class RabbitMQProducer {
 
     public void sendMessage(String exchange,String queue,String message) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int anInt = random.nextInt(10, 100);
+        int anInt = random.nextInt(1, 10);
         for (int i = 0; i < anInt; i++) {
-            rabbitTemplate.convertAndSend(exchange, queue ,i+":"+message);
+            rabbitTemplate.convertAndSend(exchange, queue , Map.of("message", i+":"+message));
         }
         System.out.println("Sent message: " + message);
     }

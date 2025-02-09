@@ -7,6 +7,8 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class RabbitMQConsumer {
 
@@ -29,12 +31,22 @@ public class RabbitMQConsumer {
      */
     @RabbitListener(queuesToDeclare = @Queue(value = "work.queue",durable = "false"),concurrency = "2-10")
     public void receiveMessage1(String message) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Received work.queue message1: " + message);
     }
 
-    @RabbitListener(queues = "work.queue")
-    public void receiveMessage2(String message) {
-        System.out.println("Received work.queue message2: " + message);
+    @RabbitListener(queues = "work.queue",concurrency = "1-2")
+    public void receiveMessage2(Map<String, Object> message) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Received Map: " + message);
     }
 
     /*
@@ -102,11 +114,12 @@ public class RabbitMQConsumer {
           队列绑定到交换器时可以使用通配符：
             * 匹配一个单词。
             # 匹配零个或多个单词。
+            todo:: 旧的routeking 不会自动删除，需要手动去管理界面解除。
      */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "topic.queue1", durable = "false"),
             exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
-            key = {"user.*", "user.#"}
+            key = {"user.*", "auth.#"}
     ))
     public void listenerTopicQueue1(String msg) {
         System.out.println("接收到user消息：" + msg);
