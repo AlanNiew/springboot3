@@ -1,5 +1,8 @@
 package com.example.config;
 
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.SimpleMessageConverter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -30,8 +33,13 @@ public class RabbitMqConfig {
         return factory;
     }*/
 
-//    @Bean
-//    public Jackson2JsonMessageConverter jsonMessageConverter() {
-//        return new Jackson2JsonMessageConverter();
-//    }
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter(); // 用于转换 JSON 类型消息
+    }
+
+    @Bean
+    public SimpleMessageConverter simpleMessageConverter() {
+        return new SimpleMessageConverter(); // 用于转换 String 类型消息
+    }
 }

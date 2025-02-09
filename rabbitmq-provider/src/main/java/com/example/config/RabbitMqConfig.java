@@ -1,5 +1,7 @@
 package com.example.config;
 
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -35,4 +37,9 @@ public class RabbitMqConfig {
      优先级队列模式	无（默认交换器）	必须与队列名称完全一致。
      *
      */
+
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 }
