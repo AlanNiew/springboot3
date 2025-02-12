@@ -2,9 +2,7 @@ package com.example.service;
 
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -89,7 +87,7 @@ public class RabbitMQConsumer {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "fanout.queue2",durable = "false"),
-            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
+            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT,delayed = "true")
     ))
     public void listenerFanoutQueue2(String msg) {
         System.out.println("接收到fanout.queue【2】消息：" + msg);

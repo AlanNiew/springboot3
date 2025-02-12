@@ -1,0 +1,13 @@
+server:
+  port: 9090
+#spring:
+#  elasticsearch:
+#    uris: http://192.168.220.128:9200
+#    connection-timeout: 10s
+#    socket-timeout: 30s
+#    username:
+#    password:
+elasticsearch:
+  port: 9200
+  host: 192.168.220.128
+  scheme: http
