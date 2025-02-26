@@ -33,4 +33,9 @@ public class ElasticsearchController {
     public String deleteProduct(@PathVariable String id) throws IOException {
         return elasticsearchService.deleteProduct(id);
     }
+
+    @GetMapping("/search/{keyword}")
+    public String searchProduct(@PathVariable String keyword) {
+        return elasticsearchService.searchProduct(keyword);
+    }
 }

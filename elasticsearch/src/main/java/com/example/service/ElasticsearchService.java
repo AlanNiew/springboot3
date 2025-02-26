@@ -9,11 +9,16 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,9 +35,10 @@ public class ElasticsearchService {
      */
     public String addProduct(Product product) throws IOException {
         IndexRequest request = new IndexRequest(INDEX)
-                .id(product.getId()).source(JSONUtil.toJsonStr(product), XContentType.JSON);
+                .id(product.getId())
+                .source(JSONUtil.toJsonStr(product), XContentType.JSON);
         IndexResponse response = client.index(request, RequestOptions.DEFAULT);
-        return response.getId();
+        return response.toString();
     }
 
     /**
@@ -54,7 +60,7 @@ public class ElasticsearchService {
         UpdateRequest request = new UpdateRequest(INDEX, product.getId());
         request.doc(JSONUtil.toJsonStr(product), XContentType.JSON);
         UpdateResponse update = client.update(request, RequestOptions.DEFAULT);
-        return "Updated";
+        return update.toString();
     }
 
     /**
@@ -63,10 +69,45 @@ public class ElasticsearchService {
     public String deleteProduct(String id) throws IOException {
         DeleteRequest request = new DeleteRequest(INDEX, id);
         DeleteResponse delete = client.delete(request, RequestOptions.DEFAULT);
-        return "Deleted";
+        return delete.toString();
     }
 
     /*
     ------------------ es搜索服务------------------
      */
+
+    public String searchProduct(String keyword) {
+        // TODO
+        // 构建搜索请求
+        SearchRequest searchRequest = new SearchRequest(INDEX);
+        // 搜索条件
+        searchRequest.source().query(QueryBuilders.matchQuery("name", keyword));
+        try {
+            // 执行搜索
+            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+            parseSearchResponse(response);
+            return JSONUtil.toJsonStr(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    //解析搜索响应
+    public void parseSearchResponse(SearchResponse response) {
+        // 获取搜索结果
+        SearchHits hits = response.getHits();
+        // 获取总记录数
+        long totalHits = hits.getTotalHits().value;
+        System.out.println("总记录数：" + totalHits);
+        SearchHit[] searchHits = hits.getHits();
+        for (SearchHit hit : searchHits) {
+            // 获取文档内容
+            String sourceAsString = hit.getSourceAsString();
+            // 解析文档内容
+            Product product = JSONUtil.toBean(sourceAsString, Product.class);
+            // 处理解析后的结果
+            System.out.println(product.toString());
+        }
+    }
 }
