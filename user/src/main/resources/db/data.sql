@@ -1,12 +1,8 @@
-INSERT INTO users (name,password, age) VALUES
+MERGE INTO users (name,password, age)
+key (name)
+VALUES
      ('John Doe', '123456', 30),
      ('Jane Smith', 'abcdef', 28),
-     ('Mike Brown', 'qwerty', 35),
-     ('Amy White', 'zxcvbn', 27),
-     ('Tom Black', 'asdfgh', 31),
-     ('Jessica Red', 'poiuyt', 29),
-     ('Emily Blue', 'lkjhgf', 33),
-     ('David Green', 'mnbvcx', 32),
-     ('admin','$2a$10$sflyXqR78a58WN1fSRu0UOn4cgpgLpq.7czjdMcxPga2BdvwS/2JG', 17);
+     ('Mike Brown', 'qwerty', 35);
 
-
+-- MERGE INTO 如果 name 不存在，则插入数据, 如果存在，则跳过

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class StandardLoggingInterceptor implements Interceptor {
@@ -90,12 +91,12 @@ public class StandardLoggingInterceptor implements Interceptor {
             // 克隆响应以便多次读取body
             Response response = originalResponse.newBuilder()
                 .body(ResponseBody.create(
-                    originalResponse.body().contentType(),
-                    originalResponse.body().bytes()
+                    Objects.requireNonNull(originalResponse.body()).contentType(),
+                    Objects.requireNonNull(originalResponse.body()).bytes()
                 ))
                 .build();
-            
-            System.out.println("<-- " + response.code() + " " + response.message() + " " + 
+
+            System.out.println("<-- " + response.code() + " " + response.message() + " " +
                              response.request().url() + " (" + tookMs + "ms)");
 
             // 打印响应头
@@ -107,14 +108,14 @@ public class StandardLoggingInterceptor implements Interceptor {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 byte[] bytes = responseBody.bytes();
-                
+
                 if (isPlaintext(bytes)) {
                     System.out.println("\n" + new String(bytes, UTF8));
                     System.out.println("<-- END HTTP (" + bytes.length + "-byte body)");
                 } else {
                     System.out.println("<-- END HTTP (binary " + bytes.length + "-byte body omitted)");
                 }
-                
+
                 // 重建响应体
                 return response.newBuilder()
                     .body(ResponseBody.create(bytes, responseBody.contentType()))

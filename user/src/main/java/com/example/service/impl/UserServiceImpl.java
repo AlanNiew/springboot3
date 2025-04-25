@@ -4,6 +4,7 @@ import com.example.dao.UserRepository;
 import com.example.entity.UserDO;
 import com.example.service.UserService;
 import jakarta.annotation.Resource;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user",key = "'userList'")
     public List<UserDO> getUserList() {
         return userRepository.findAll();
     }

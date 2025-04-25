@@ -208,7 +208,10 @@
             </providers>
         </encoder>
     </appender>
-
+    <appender name="plumeLog" class="com.plumelog.logback.appender.LiteAppender">
+        <appName>${APP_NAME}</appName>
+        <plumelogHost>localhost:8891</plumelogHost>
+    </appender>
     <!--控制框架输出日志-->
     <logger name="org.slf4j" level="INFO"/>
     <logger name="springfox" level="INFO"/>
@@ -224,6 +227,7 @@
         <appender-ref ref="FILE_DEBUG"/>
         <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_ERROR"/>
+<!--        <appender-ref ref="plumeLog"/>-->
 <!--        <appender-ref ref="LOG_STASH_ERROR"/>-->
     </root>
 

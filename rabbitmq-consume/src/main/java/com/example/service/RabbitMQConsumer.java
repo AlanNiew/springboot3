@@ -1,5 +1,7 @@
 package com.example.service;
 
+import cn.hutool.core.thread.ThreadUtil;
+import com.example.entity.MyMsgObject;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -12,8 +14,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,7 +29,7 @@ public class RabbitMQConsumer {
      */
     @RabbitListener(queuesToDeclare = @Queue(value = "simple.queue"))
     public void receiveMessage(String message) {
-        System.out.println("Received myQueue message: " + message);
+        System.out.println("Received simple.queue message: " + message);
     }
 
     /*
@@ -36,39 +37,57 @@ public class RabbitMQConsumer {
     routingKey 的作用:与简单模式相同，routingKey 必须与队列名称完全一致。
     todo 多个消费者共享同一个队列中的消息
      */
-    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue",durable = "false"),
-            concurrency = "2-10",
-            messageConverter = "simpleMessageConverter",
-            ackMode = "MANUAL"
+/*    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
+            containerFactory = "simpleListenerFactory"
     )
-    public void receiveMessage1(String msg, Channel channel,
-                                @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
+    public void simpleReceiveMessage(String msg,
+                                     Channel channel,
+                                     @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         try {
-            Thread.sleep(100);
-            if (random.nextInt(1,10)%2==0){
+            Thread.sleep(1000);
+            if (random.nextInt(1,10)%5==0){
                 throw new Exception("手动抛出异常");
             }
-            System.out.println("Received work.queue message1: " + msg);
+            System.out.println("simpleListenerFactory Received message: " + msg);
             // 手动确认消息已处理
             channel.basicAck(tag,false);
         } catch (Exception e) {
-            log.error("Failed to process message: {}", e.getMessage());
+            log.error("Failed to process message: {},消息内容：{}", e.getMessage(),msg);
             //如果处理失败，可以拒绝消息，消息将重新进入队列
             channel.basicNack(tag,false,true);
         }
+    }*/
 
+    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
+            containerFactory = "plusListenerFactory"
+    )
+    public void plusReceiveMessage(List<MyMsgObject> messages,
+                                   @Header(AmqpHeaders.DELIVERY_TAG)  Long tag,
+                                   Channel channel) throws IOException {
+        try {
+            ThreadUtil.sleep(100);
+            for (MyMsgObject message : messages) {
+                System.out.println("plusListenerFactory Received message: " + message.getMessage());
+            }
+            channel.basicAck(tag,false);
+        } catch (Exception e) {
+            log.error("Failed to process message: {},消息内容：{}", e.getMessage(),messages);
+            channel.basicNack(tag,false,true);
+        }
     }
 
-    @RabbitListener(queues = "work.queue",concurrency = "1-2",messageConverter = "jsonMessageConverter")
+/*    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
+            concurrency = "2-5",
+            messageConverter = "jsonMessageConverter")
     public void receiveMessage2(Map<String, Object> message) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println("Received Map: " + message);
-    }
+    }*/
 
     /*
     发布/订阅模式（Publish/Subscribe Mode）
@@ -87,7 +106,7 @@ public class RabbitMQConsumer {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "fanout.queue2",durable = "false"),
-            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT,delayed = "true")
+            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
     ))
     public void listenerFanoutQueue2(String msg) {
         System.out.println("接收到fanout.queue【2】消息：" + msg);
