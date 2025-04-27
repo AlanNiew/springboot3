@@ -59,23 +59,7 @@ public class RabbitMqConfig {
      */
 
     @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
-        ObjectMapper mapper = new ObjectMapper();
-        // 忽略null
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        // 日期格式化
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        // 支持java8日期格式化
-        mapper.registerModule(new JavaTimeModule());
-        // 禁用默认的时间戳格式
-        mapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
-        // 禁用反序列化时，未知属性时不报错（兼容老版本字段）
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        // 解决Long类型精度丢失的问题
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
-        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-        mapper.registerModule(simpleModule);
-        return new Jackson2JsonMessageConverter(mapper);
+    public Jackson2JsonMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
+        return new Jackson2JsonMessageConverter(objectMapper);
     }
 }

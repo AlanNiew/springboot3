@@ -59,8 +59,8 @@ public class RabbitMqConfig {
         factory.setBatchListener(true); // 设置批量监听
         factory.setConsumerBatchEnabled(true); // 设置批量消费
 //        factory.setBatchingStrategy(new SimpleBatchingStrategy(10, 100, 1000));
-        factory.setConcurrentConsumers(2); // 最小并发消费者
-        factory.setMaxConcurrentConsumers(10); // 最大并发消费者
+        factory.setConcurrentConsumers(1); // 最小并发消费者
+        factory.setMaxConcurrentConsumers(5); // 最大并发消费者
         factory.setPrefetchCount(20); // 每个消费者每次只预取一条消息
         return factory;
     }

@@ -2,23 +2,33 @@ package com.example.service;
 
 import cn.hutool.core.thread.ThreadUtil;
 import com.example.entity.MyMsgObject;
+import com.example.utils.JsonUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
 @Slf4j
 public class RabbitMQConsumer {
+
+    private final JsonUtils jsonUtils;
+
+    public RabbitMQConsumer(JsonUtils jsonUtils) {
+        this.jsonUtils = jsonUtils;
+    }
 
     // 监听队列
 
@@ -62,18 +72,19 @@ public class RabbitMQConsumer {
     @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
             containerFactory = "plusListenerFactory"
     )
-    public void plusReceiveMessage(List<MyMsgObject> messages,
-                                   @Header(AmqpHeaders.DELIVERY_TAG)  Long tag,
+    public void plusReceiveMessage(@Payload List<Message> messages,
                                    Channel channel) throws IOException {
+        long deliveryTag = messages.get(messages.size() - 1).getMessageProperties().getDeliveryTag();
         try {
             ThreadUtil.sleep(100);
-            for (MyMsgObject message : messages) {
-                System.out.println("plusListenerFactory Received message: " + message.getMessage());
+            for (Message message : messages) {
+                MyMsgObject<String> stringMyMsgObject = jsonUtils.fromJson(new String(message.getBody()), new TypeReference<MyMsgObject<String>>() {});
+                System.out.println("plusListenerFactory Received message: " + stringMyMsgObject);
             }
-            channel.basicAck(tag,false);
+            channel.basicAck(deliveryTag,false);
         } catch (Exception e) {
             log.error("Failed to process message: {},消息内容：{}", e.getMessage(),messages);
-            channel.basicNack(tag,false,true);
+            channel.basicNack(deliveryTag,false,true);
         }
     }
 

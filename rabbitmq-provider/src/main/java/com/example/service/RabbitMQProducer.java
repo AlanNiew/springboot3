@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.entity.MyMsgObject;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,7 +36,8 @@ public class RabbitMQProducer {
         for (int i = 0; i < anInt; i++) {
             CorrelationData correlationData = new CorrelationData();
             MyMsgObject<String> msgObject = new MyMsgObject<>(message+"_"+i,correlationData.getId());
-            rabbitTemplate.convertAndSend(exchange, queue, msgObject, correlationData);
+            Message msg = new Message(msgObject.toString().getBytes(), messageProperties);
+            rabbitTemplate.convertAndSend(exchange, queue, msg, correlationData);
         }
         System.out.println("Sent message: " + message);
     }
