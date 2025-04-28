@@ -3,7 +3,6 @@ package com.example.api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class CommonPage<T> {
      */
     private List<T> list;
 
-    public static <T> CommonPage<T> restPage(Page<T> pageInfo) {
+/*    public static <T> CommonPage<T> restPage(Page<T> pageInfo) {
         CommonPage<T> result = new CommonPage<>();
         result.setTotalPage(pageInfo.getTotalPages());
         result.setPageNum(pageInfo.getNumber());
@@ -45,5 +44,5 @@ public class CommonPage<T> {
         result.setTotal(pageInfo.getTotalElements());
         result.setList(pageInfo.getContent());
         return result;
-    }
+    }*/
 }

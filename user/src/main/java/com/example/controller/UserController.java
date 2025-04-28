@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.api.CommonPage;
 import com.example.api.CommonResult;
 import com.example.entity.UserDO;
 import com.example.service.UserService;
@@ -53,7 +52,7 @@ public class UserController {
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize
     ) {
         Page<UserDO> userDOS = userService.pageList(pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(userDOS));
+        return CommonResult.success(userDOS);
     }
 
     @GetMapping("/byName/{name}")
