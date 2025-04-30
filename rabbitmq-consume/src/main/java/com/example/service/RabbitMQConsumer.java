@@ -4,7 +4,6 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.example.entity.MyMsgObject;
 import com.example.utils.JsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -17,7 +16,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -47,29 +46,29 @@ public class RabbitMQConsumer {
     routingKey 的作用:与简单模式相同，routingKey 必须与队列名称完全一致。
     todo 多个消费者共享同一个队列中的消息
      */
-/*    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
+    @RabbitListener(id = "simpleListener",queuesToDeclare = @Queue(value = "work.queue"),
             containerFactory = "simpleListenerFactory"
     )
-    public void simpleReceiveMessage(String msg,
-                                     Channel channel,
-                                     @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+    public void simpleReceiveMessage(@Payload Message msg,
+                                     Channel channel) throws IOException {
+        long deliveryTag = msg.getMessageProperties().getDeliveryTag();
+        MyMsgObject<String> msgObject = jsonUtils.fromJson(new String(msg.getBody()), new TypeReference<>() {});
         try {
-            Thread.sleep(1000);
-            if (random.nextInt(1,10)%5==0){
-                throw new Exception("手动抛出异常");
+            Thread.sleep(100);
+            if (LocalTime.now().getSecond() == 0){
+                throw new RuntimeException("手动抛出异常");
             }
-            System.out.println("simpleListenerFactory Received message: " + msg);
+            System.out.println("simpleListenerFactory Received message: " + msgObject.getMessage());
             // 手动确认消息已处理
-            channel.basicAck(tag,false);
+            channel.basicAck(deliveryTag,false);
         } catch (Exception e) {
-            log.error("Failed to process message: {},消息内容：{}", e.getMessage(),msg);
+            log.error("simpleListenerFactory Failed to process message: {},消息内容：{}", e.getMessage(),msgObject.getMessage());
             //如果处理失败，可以拒绝消息，消息将重新进入队列
-            channel.basicNack(tag,false,true);
+            channel.basicNack(deliveryTag,false,true);
         }
-    }*/
+    }
 
-    @RabbitListener(queuesToDeclare = @Queue(value = "work.queue"),
+    @RabbitListener(id = "plusListener",queuesToDeclare = @Queue(value = "work.queue"),
             containerFactory = "plusListenerFactory"
     )
     public void plusReceiveMessage(@Payload List<Message> messages,
@@ -81,10 +80,10 @@ public class RabbitMQConsumer {
                 MyMsgObject<String> stringMyMsgObject = jsonUtils.fromJson(new String(message.getBody()), new TypeReference<MyMsgObject<String>>() {});
                 System.out.println("plusListenerFactory Received message: " + stringMyMsgObject);
             }
-            channel.basicAck(deliveryTag,false);
+            channel.basicAck(deliveryTag,true);
         } catch (Exception e) {
-            log.error("Failed to process message: {},消息内容：{}", e.getMessage(),messages);
-            channel.basicNack(deliveryTag,false,true);
+            log.error("plusListenerFactory Failed to process message: {},消息内容：{}", e.getMessage(),messages);
+            channel.basicNack(deliveryTag,true,true);
         }
     }
 

@@ -30,7 +30,7 @@ public class RabbitMqConfig {
     @Bean
     public SimpleRabbitListenerContainerFactory simpleListenerFactory(
             ConnectionFactory connectionFactory,
-            SimpleMessageConverter simpleMessageConverter) {
+            Jackson2JsonMessageConverter simpleMessageConverter) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(simpleMessageConverter); // 设置消息转换器
@@ -38,6 +38,7 @@ public class RabbitMqConfig {
         factory.setConcurrentConsumers(1); // 最小并发消费者
         factory.setMaxConcurrentConsumers(2); // 最大并发消费者
         factory.setPrefetchCount(1); // 每个消费者每次只预取一条消息
+        factory.setAutoStartup(false); // 设置自动启动
         return factory;
     }
 
@@ -62,6 +63,7 @@ public class RabbitMqConfig {
         factory.setConcurrentConsumers(1); // 最小并发消费者
         factory.setMaxConcurrentConsumers(5); // 最大并发消费者
         factory.setPrefetchCount(20); // 每个消费者每次只预取一条消息
+        factory.setAutoStartup(false); // 设置自动启动
         return factory;
     }
 

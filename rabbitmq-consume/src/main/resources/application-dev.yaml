@@ -2,13 +2,13 @@ server:
   port: 8092
 spring:
   rabbitmq:
-    host: 192.168.220.128
+    host: 47.83.12.16
     port: 5672
     username: admin
-    password: admin
+    password: VSHZJ#Wp
     virtual-host: /
     listener:
       simple:
         prefetch: 1
-        auto-startup: true # 自动启动 RabbitMQ 的消息监听器容器, 默认为 true
+        auto-startup: false # 自动启动 RabbitMQ 的消息监听器容器, 默认为 true
       type: simple # 默认使用 SimpleMessageListenerContainer

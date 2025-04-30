@@ -24,10 +24,7 @@ public class RabbitMqConfirmCallback implements RabbitTemplate.ConfirmCallback {
 
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-        if (ack) {
-            System.out.println("消息成功到达交换机, ID: " +
-                    (correlationData != null ? correlationData.getId() : "null"));
-        } else {
+        if (!ack) {
             System.err.println("消息未到达交换机, 原因: " + cause +
                     ", ID: " + (correlationData != null ? correlationData.getId() : "null"));
         }

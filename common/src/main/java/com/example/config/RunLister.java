@@ -14,6 +14,6 @@ import org.springframework.core.annotation.Order;
 public class RunLister implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("启动成功");
+        System.out.println("项目启动成功！");
     }
 }
