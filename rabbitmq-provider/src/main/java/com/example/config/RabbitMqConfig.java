@@ -1,19 +1,11 @@
 package com.example.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.text.SimpleDateFormat;
 
 /**
  * @author SouthWind
@@ -23,15 +15,6 @@ import java.text.SimpleDateFormat;
 @Configuration
 public class RabbitMqConfig {
 
-/*    @Bean
-    public Queue simpleQueue() {
-        return new Queue("simple.queue", false); // 队列名称为 myQueue，非持久化
-    }
-
-    @Bean
-    public Queue workQueue() {
-        return new Queue("work.queue", false); // 队列名称为 myQueue，非持久化
-    }*/
     @Bean
     public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory,
                                          Jackson2JsonMessageConverter jsonMessageConverter) {

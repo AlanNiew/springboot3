@@ -1,6 +1,7 @@
 package com.example.service;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.example.config.RabbitMqConfig;
 import com.example.entity.MyMsgObject;
 import com.example.utils.JsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,10 +9,7 @@ import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +34,7 @@ public class RabbitMQConsumer {
         todo routingKey 的作用:默认交换器（""）会将消息路由到与 routingKey 同名的队列。
         routingKey 必须与队列名称完全一致。
      */
-    @RabbitListener(queuesToDeclare = @Queue(value = "simple.queue"))
+    @RabbitListener(queuesToDeclare = @Queue(value = RabbitMqConfig.SIMPLE_QUEUE))
     public void receiveMessage(String message) {
         System.out.println("Received simple.queue message: " + message);
     }
@@ -46,7 +44,15 @@ public class RabbitMQConsumer {
     routingKey 的作用:与简单模式相同，routingKey 必须与队列名称完全一致。
     todo 多个消费者共享同一个队列中的消息
      */
-    @RabbitListener(id = "simpleListener",queuesToDeclare = @Queue(value = "work.queue"),
+    @RabbitListener(id = "simpleListener",
+//            queuesToDeclare = @Queue(value = "work.queue",
+//                durable = "true",
+//                arguments = {
+//                        @Argument(name = "x-dead-letter-exchange", value = "dlx.exchange"), // 死信交换器
+//                        @Argument(name = "x-dead-letter-routing-key", value = "dlx.work") // 死信路由key
+//                        }
+//                ),
+            queues = "work.queue",
             containerFactory = "simpleListenerFactory"
     )
     public void simpleReceiveMessage(@Payload Message msg,
@@ -55,7 +61,7 @@ public class RabbitMQConsumer {
         MyMsgObject<String> msgObject = jsonUtils.fromJson(new String(msg.getBody()), new TypeReference<>() {});
         try {
             Thread.sleep(100);
-            if (LocalTime.now().getSecond() == 0){
+            if (LocalTime.now().getSecond()%10 == 0){
                 throw new RuntimeException("手动抛出异常");
             }
             System.out.println("simpleListenerFactory Received message: " + msgObject.getMessage());
@@ -64,11 +70,13 @@ public class RabbitMQConsumer {
         } catch (Exception e) {
             log.error("simpleListenerFactory Failed to process message: {},消息内容：{}", e.getMessage(),msgObject.getMessage());
             //如果处理失败，可以拒绝消息，消息将重新进入队列
-            channel.basicNack(deliveryTag,false,true);
+//            channel.basicNack(deliveryTag,false,true);
+            //如果处理失败，可以拒绝消息，消息将进入死信队列
+            channel.basicNack(deliveryTag,false,false);
         }
     }
 
-    @RabbitListener(id = "plusListener",queuesToDeclare = @Queue(value = "work.queue"),
+    @RabbitListener(id = "plusListener",queues = "work.queue",
             containerFactory = "plusListenerFactory"
     )
     public void plusReceiveMessage(@Payload List<Message> messages,
@@ -107,7 +115,7 @@ public class RabbitMQConsumer {
      */
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "fanout.queue1", durable = "false"),
+            value = @Queue(name = "fanout.queue1", durable = "true"),
             exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
     ))
     public void listenerFanoutQueue1(String msg) {
@@ -115,7 +123,7 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "fanout.queue2",durable = "false"),
+            value = @Queue(name = "fanout.queue2",durable = "true"),
             exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
     ))
     public void listenerFanoutQueue2(String msg) {
@@ -131,7 +139,7 @@ public class RabbitMQConsumer {
      */
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue1", durable = "false"),
+            value = @Queue(name = "direct.queue1", durable = "true"),
             exchange = @Exchange(name = "jobs.direct"),
             key = "error"
     ))
@@ -140,7 +148,7 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue2", durable = "false"),
+            value = @Queue(name = "direct.queue2", durable = "true"),
             exchange = @Exchange(name = "jobs.direct"),
             key = "warn"
     ))
@@ -148,7 +156,7 @@ public class RabbitMQConsumer {
         System.out.println("接收到warn消息：" + msg);
     }
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue3", durable = "false"),
+            value = @Queue(name = "direct.queue3", durable = "true"),
             exchange = @Exchange(name = "jobs.direct"),
             key = "info"
     ))
@@ -167,7 +175,7 @@ public class RabbitMQConsumer {
             todo:: 旧的routeking 不会自动删除，需要手动去管理界面解除。
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue1", durable = "false"),
+            value = @Queue(name = "topic.queue1", durable = "true"),
             exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
             key = {"user.*", "auth.#"}
     ))
@@ -176,7 +184,7 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue2", durable = "false"),
+            value = @Queue(name = "topic.queue2", durable = "true"),
             exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
             key = {"order.#"}
     ))
@@ -185,11 +193,42 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue3", durable = "false"),
+            value = @Queue(name = "topic.queue3", durable = "true"),
             exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
             key = {"#.news"}
     ))
     public void listenerTopicQueue3(String msg) {
         System.out.println("接收到news消息：" + msg);
+    }
+
+    //延迟消息消费者
+    @RabbitListener(queues = "delayed.queue", containerFactory = "simpleListenerFactory")
+    public void receiveDelayMessage(Message message,Channel channel) throws IOException {
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        MyMsgObject stringMyMsgObject = jsonUtils.fromJson(new String(message.getBody()), MyMsgObject.class);
+        try {
+            ThreadUtil.sleep(100);
+            if (LocalTime.now().getSecond()%2==0){
+                throw new RuntimeException("测试异常");
+            }
+            System.out.println("Delayed Queue Received delayed message: " + stringMyMsgObject.getMessage());
+            channel.basicAck(deliveryTag,false);
+        }catch (Exception e){
+            log.error("receiveDelayMessage Failed to process message: {},消息内容：{}", e.getMessage(),stringMyMsgObject.getMessage());
+            channel.basicReject(deliveryTag,false);
+        }
+    }
+    //死信队列消费者
+    @RabbitListener(queues = "dlx.queue", containerFactory = "simpleListenerFactory")
+    public void receiveDlxMessage(Message message,  Channel channel) throws IOException {
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        try {
+            MyMsgObject<String> stringMyMsgObject = jsonUtils.fromJson(new String(message.getBody()), new TypeReference<>() {});
+            System.out.println("Dlx Queue Received delayed message: " + stringMyMsgObject.getMessage());
+            channel.basicAck(deliveryTag,false);
+        } catch (Exception e) {
+            log.error("receiveDlxMessage Failed to process message: {},消息内容：{}", e.getMessage(),message);
+            channel.basicReject(deliveryTag,false);
+        }
     }
 }
