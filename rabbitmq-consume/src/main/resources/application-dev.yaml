@@ -15,4 +15,4 @@ spring:
     requested-heartbeat: 30 #  心跳间隔30s
     template:
       retry:
-        enabled: true # 启用重试
+        enabled: false # 禁用模板级重试（改用业务层重试）

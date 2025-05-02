@@ -9,7 +9,10 @@ import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +55,7 @@ public class RabbitMQConsumer {
 //                        @Argument(name = "x-dead-letter-routing-key", value = "dlx.work") // 死信路由key
 //                        }
 //                ),
-            queues = "work.queue",
+            queues = RabbitMqConfig.WORK_QUEUE,
             containerFactory = "simpleListenerFactory"
     )
     public void simpleReceiveMessage(@Payload Message msg,
@@ -76,7 +79,7 @@ public class RabbitMQConsumer {
         }
     }
 
-    @RabbitListener(id = "plusListener",queues = "work.queue",
+    @RabbitListener(id = "plusListener",queues = RabbitMqConfig.WORK_QUEUE,
             containerFactory = "plusListenerFactory"
     )
     public void plusReceiveMessage(@Payload List<Message> messages,
@@ -115,16 +118,16 @@ public class RabbitMQConsumer {
      */
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "fanout.queue1", durable = "true"),
-            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
+            value = @Queue(name = RabbitMqConfig.FANOUT_QUEUE_1, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.FANOUT_EXCHANGE, type = ExchangeTypes.FANOUT)
     ))
     public void listenerFanoutQueue1(String msg) {
         System.out.println("接收到fanout.queue【1】消息：" + msg);
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "fanout.queue2",durable = "true"),
-            exchange = @Exchange(name = "jobs.fanout", type = ExchangeTypes.FANOUT)
+            value = @Queue(name = RabbitMqConfig.FANOUT_QUEUE_2,durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.FANOUT_EXCHANGE, type = ExchangeTypes.FANOUT)
     ))
     public void listenerFanoutQueue2(String msg) {
         System.out.println("接收到fanout.queue【2】消息：" + msg);
@@ -139,8 +142,8 @@ public class RabbitMQConsumer {
      */
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue1", durable = "true"),
-            exchange = @Exchange(name = "jobs.direct"),
+            value = @Queue(name = RabbitMqConfig.DIRECT_QUEUE_1, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.DIRECT_EXCHANGE),
             key = "error"
     ))
     public void listenerDirectQueue1(String msg) {
@@ -148,16 +151,16 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue2", durable = "true"),
-            exchange = @Exchange(name = "jobs.direct"),
+            value = @Queue(name = RabbitMqConfig.DIRECT_QUEUE_2, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.DIRECT_EXCHANGE),
             key = "warn"
     ))
     public void listenerDirectQueue2(String msg) {
         System.out.println("接收到warn消息：" + msg);
     }
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "direct.queue3", durable = "true"),
-            exchange = @Exchange(name = "jobs.direct"),
+            value = @Queue(name = RabbitMqConfig.DIRECT_QUEUE_3, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.DIRECT_EXCHANGE),
             key = "info"
     ))
     public void listenerDirectQueue3(String msg) {
@@ -175,8 +178,8 @@ public class RabbitMQConsumer {
             todo:: 旧的routeking 不会自动删除，需要手动去管理界面解除。
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue1", durable = "true"),
-            exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
+            value = @Queue(name = RabbitMqConfig.TOPIC_QUEUE_1, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.TOPIC_EXCHANGE, type = ExchangeTypes.TOPIC),
             key = {"user.*", "auth.#"}
     ))
     public void listenerTopicQueue1(String msg) {
@@ -184,8 +187,8 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue2", durable = "true"),
-            exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
+            value = @Queue(name = RabbitMqConfig.TOPIC_QUEUE_2, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.TOPIC_EXCHANGE, type = ExchangeTypes.TOPIC),
             key = {"order.#"}
     ))
     public void listenerTopicQueue2(String msg) {
@@ -193,8 +196,8 @@ public class RabbitMQConsumer {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "topic.queue3", durable = "true"),
-            exchange = @Exchange(name = "jobs.topic", type = ExchangeTypes.TOPIC),
+            value = @Queue(name = RabbitMqConfig.TOPIC_QUEUE_3, durable = "true"),
+            exchange = @Exchange(name = RabbitMqConfig.TOPIC_EXCHANGE, type = ExchangeTypes.TOPIC),
             key = {"#.news"}
     ))
     public void listenerTopicQueue3(String msg) {
@@ -202,7 +205,7 @@ public class RabbitMQConsumer {
     }
 
     //延迟消息消费者
-    @RabbitListener(queues = "delayed.queue", containerFactory = "simpleListenerFactory")
+    @RabbitListener(queues = RabbitMqConfig.DELAY_QUEUE, containerFactory = "simpleListenerFactory")
     public void receiveDelayMessage(Message message,Channel channel) throws IOException {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         MyMsgObject stringMyMsgObject = jsonUtils.fromJson(new String(message.getBody()), MyMsgObject.class);
@@ -219,7 +222,7 @@ public class RabbitMQConsumer {
         }
     }
     //死信队列消费者
-    @RabbitListener(queues = "dlx.queue", containerFactory = "simpleListenerFactory")
+    @RabbitListener(queues = RabbitMqConfig.DLX_QUEUE, containerFactory = "simpleListenerFactory")
     public void receiveDlxMessage(Message message,  Channel channel) throws IOException {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         try {

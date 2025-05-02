@@ -18,12 +18,23 @@ import java.util.Map;
  */
 @Configuration
 public class RabbitMqConfig {
-
+    //默认交换机
     public static final String SIMPLE_QUEUE = "simple.queue";
     public static final String WORK_QUEUE = "work.queue";
-    public static final String DIRECT_QUEUE = "direct.queue";
-    public static final String TOPIC_QUEUE = "topic.queue";
-    public static final String FANOUT_QUEUE = "fanout.queue";
+    //直连
+    public static final String DIRECT_EXCHANGE = "jobs.direct"; // 直连交换机
+    public static final String DIRECT_QUEUE_1 = "direct.queue1"; // 直连队列1
+    public static final String DIRECT_QUEUE_2 = "direct.queue2"; // 直连队列2
+    public static final String DIRECT_QUEUE_3 = "direct.queue3"; // 直连队列3
+    // 主题
+    public static final String TOPIC_EXCHANGE = "jobs.topic"; // 主题交换机
+    public static final String TOPIC_QUEUE_1 = "topic.queue1"; // 主题队列1
+    public static final String TOPIC_QUEUE_2 = "topic.queue2"; // 主题队列2
+    public static final String TOPIC_QUEUE_3 = "topic.queue3"; // 主题队列3
+    // 广播
+    public static final String FANOUT_EXCHANGE = "jobs.fanout"; // 广播交换机
+    public static final String FANOUT_QUEUE_1 = "fanout.queue1"; // 广播队列1
+    public static final String FANOUT_QUEUE_2 = "fanout.queue2"; // 广播队列2
     //死信
     public static final String DLX_EXCHANGE = "dlx.exchange"; // 死信交换机
     public static final String DLX_QUEUE = "dlx.queue";  //死信队列
@@ -35,7 +46,10 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue workQueue() {
-        return new Queue("work.queue", true,false,false,
+        return new Queue(WORK_QUEUE,
+                true,
+                false,
+                false,
                 Map.of(
                         "x-dead-letter-exchange", DLX_EXCHANGE,
                         "x-dead-letter-routing-key", DLX_ROUTING_KEY
@@ -50,7 +64,11 @@ public class RabbitMqConfig {
         // 死信队列
         @Bean
         public Queue dlq() {
-            return new Queue(DLX_QUEUE, true);
+            return QueueBuilder.durable(DLX_QUEUE)
+                    .withArgument("x-message-ttl", 1000*60*60) // 消息过期时间，1小时
+                    .withArgument("x-max-length", 10_000) //队列最大长度，最大1万条
+                    .withArgument("x-overflow", "reject-publish") // 队列达到最大长度后，新消息的拒绝策略
+                    .build();
         }
         // 绑定死信交换机和队列
         @Bean
