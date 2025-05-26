@@ -341,4 +341,29 @@ public class RedisUtil {
                 connection.eval(luaScript.getBytes(), ReturnType.INTEGER, 1, key.getBytes())
         );
     }
+
+    //根据redis key前缀为xxx的列表
+    public List<String> getKeysByPrefix(String prefix) {
+        ScanOptions options = ScanOptions.scanOptions().match(prefix + "*").count(100).build();
+        List<String> list = new ArrayList<>();
+        try (Cursor<String> scan = redisTemplate.scan(options)) {
+            while (scan.hasNext()) {
+                list.add(scan.next());
+            }
+        }catch (Exception e){
+            throw new RuntimeException("获取redis key前缀列表失败",e);
+        }
+        return list;
+    }
+
+    //stream
+    public void streamAdd(String key, Map<String, Object> value) {
+        StreamOperations<String, String, Object> ops = redisTemplate.opsForStream();
+        ops.add(key, value);
+    }
+
+    public void streamDelete(String key, String id) {
+        StreamOperations<String, String, Object> ops = redisTemplate.opsForStream();
+        ops.delete(key, id);
+    }
 }
