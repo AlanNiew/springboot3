@@ -17,6 +17,7 @@
         <module>elasticsearch</module>
         <module>client</module>
         <module>microservice</module>
+        <module>base</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -2,11 +2,9 @@ package com.example.proxy.mybaits.factory;
 
 import com.example.proxy.mybaits.annontion.Param;
 import com.example.proxy.mybaits.annontion.Table;
+import com.example.proxy.mybaits.entity.User;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +22,7 @@ public class MySqlQueryFactory {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/test?useSSL=false";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "123456";
 
     public <T> T getMapper(Class<T> clazz) {
         return clazz.cast(Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{clazz}, new MapperInvocationHandler()));
@@ -36,12 +34,15 @@ public class MySqlQueryFactory {
             String name = method.getName();
             if (name.startsWith("query") || name.startsWith("select")){
                 return selectInvoke(method,args);
+            } else if (name.startsWith("insert")) {
+                return insertInvoke(method,args);
             }
             throw new RuntimeException("不支持的方法");
         }
 
         public Object selectInvoke(Method method, Object[] args) throws Throwable {
             String sql = generateSelectSql(method);
+            System.out.println(sql);
             try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
                  PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 for (int i = 0; i < args.length; i++) {
@@ -64,6 +65,23 @@ public class MySqlQueryFactory {
             return null;
         }
 
+        public Object insertInvoke(Method method, Object[] args) throws Throwable {
+            String sql = generateInsertSql(method,args);
+            System.out.println(sql);
+            try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                for (Object arg : args) {
+                    if (arg instanceof User) {
+                        preparedStatement.setString(1, ((User) arg).getName());
+                        preparedStatement.setString(2, ((User) arg).getPassword());
+                        preparedStatement.setString(3, ((User) arg).getEmail());
+                    }
+                }
+                int i = preparedStatement.executeUpdate();
+                return i > 0;
+            }
+        }
+
         /**
          * 生成查询SQL
          * @param method
@@ -76,6 +94,26 @@ public class MySqlQueryFactory {
                     method.getReturnType().getAnnotation(Table.class).tableName() +
                     " where " +
                     createSelectWhere(method);
+        }
+
+        /**
+         * 插入sql
+         *
+         * @param method
+         * @param args
+         * @return
+         */
+        private String generateInsertSql(Method method, Object[] args) throws IllegalAccessException {
+            Object arg = args[0];
+            if (arg instanceof User) {
+                User user = (User) arg;
+                return "insert into " +
+                        user.getClass().getAnnotation(Table.class).tableName() +
+                        " (name,password,email) values (?,?,?)";
+            }
+            return "insert into " +
+                    method.getReturnType().getAnnotation(Table.class).tableName() +
+                    " values (?,?,?)";
         }
 
         private String createSelectFields(Method method) {

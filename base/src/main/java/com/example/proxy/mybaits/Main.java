@@ -13,9 +13,10 @@ public class Main {
     public static void main(String[] args) {
         MySqlQueryFactory mySqlQueryFactory = new MySqlQueryFactory();
         UserMapper userMapper = mySqlQueryFactory.getMapper(UserMapper.class);
-//        User user = userMapper.queryUserByName("tom");
+        User user = userMapper.queryUserByName("早睡早起");
 //        User user = userMapper.queryUserByNameAndId(3,"tom");
-        User user = userMapper.queryUserByNameAndPwd("tom", "123456");
+//        User user = userMapper.queryUserByNameAndPwd("早睡早起", "123456");
         System.out.println(user);
+//        userMapper.insertUser(new User("小王","123456",""));
     }
 }

@@ -3,6 +3,8 @@ package com.example.proxy.mybaits.mapper;
 import com.example.proxy.mybaits.annontion.Param;
 import com.example.proxy.mybaits.entity.User;
 
+import java.util.List;
+
 /**
  * @Author: Niu
  * @Date: 2025/5/22 14:18
@@ -15,4 +17,8 @@ public interface UserMapper {
 
     User queryUserByNameAndId(@Param("id") int id,@Param("name") String name);
     User queryUserByNameAndPwd(@Param("name") String name,@Param("password") String pwd);
+
+    List<User> listUsers();
+
+    void insertUser(User user);
 }
