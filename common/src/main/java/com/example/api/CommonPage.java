@@ -1,6 +1,8 @@
 package com.example.api;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ import java.util.List;
  * Description: 通用分页返回对象
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommonPage<T> {
     /**
      * 当前页码
@@ -31,4 +35,14 @@ public class CommonPage<T> {
      * 分页数据列表
      */
     private List<T> list;
+
+/*    public static <T> CommonPage<T> restPage(Page<T> pageInfo) {
+        CommonPage<T> result = new CommonPage<>();
+        result.setTotalPage(pageInfo.getTotalPages());
+        result.setPageNum(pageInfo.getNumber());
+        result.setPageSize(pageInfo.getSize());
+        result.setTotal(pageInfo.getTotalElements());
+        result.setList(pageInfo.getContent());
+        return result;
+    }*/
 }

@@ -1,0 +1,10 @@
+server:
+  port: 8091
+spring:
+  rabbitmq:
+    host: 47.83.12.16
+    port: 5672
+    username: admin
+    password: VSHZJ#Wp
+    virtual-host: /
+    publisher-confirm-type: correlated

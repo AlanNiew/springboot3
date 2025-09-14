@@ -6,12 +6,12 @@ import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author:Niu
@@ -39,7 +39,25 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public CommonResult<?> test3() {
+    public CommonResult<?> test3() throws InterruptedException {
+        //延迟
+        int time = ThreadLocalRandom.current().nextInt(2000, 3000);
+        TimeUnit.MILLISECONDS.sleep(time);
         return CommonResult.success(age, "查询成功");
+    }
+
+    @GetMapping("/page")
+    public CommonResult<?> pageList(
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize
+    ) {
+        Page<UserDO> userDOS = userService.pageList(pageNum, pageSize);
+        return CommonResult.success(userDOS);
+    }
+
+    @GetMapping("/byName/{name}")
+    public CommonResult<?> getUserByName(@PathVariable String name) {
+        UserDO user = userService.getUserByName(name);
+        return CommonResult.success(user, "查询成功");
     }
 }

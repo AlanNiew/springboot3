@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
+            <artifactId>microservice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
             <artifactId>data_repository</artifactId>
         </dependency>
 

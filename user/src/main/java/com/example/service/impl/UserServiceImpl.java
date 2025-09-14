@@ -4,9 +4,13 @@ import com.example.dao.UserRepository;
 import com.example.entity.UserDO;
 import com.example.service.UserService;
 import jakarta.annotation.Resource;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Author:Niu
@@ -24,7 +28,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user",key = "'userList'")
     public List<UserDO> getUserList() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<UserDO> pageList(Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum-1, pageSize);
+        return userRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public UserDO getUserByName(String name) {
+        Optional<UserDO> optional = userRepository.findByName(name);
+        return optional.orElse(null);
     }
 }

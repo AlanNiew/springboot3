@@ -22,6 +22,10 @@
             <groupId>com.example</groupId>
             <artifactId>api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>data_repository</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

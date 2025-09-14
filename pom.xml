@@ -11,6 +11,13 @@
         <module>user</module>
         <module>gateway</module>
         <module>api</module>
+        <module>auth</module>
+        <module>rabbitmq-provider</module>
+        <module>rabbitmq-consume</module>
+        <module>elasticsearch</module>
+        <module>client</module>
+        <module>microservice</module>
+        <module>base</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -48,10 +55,12 @@
         <spring-ai.version>1.0.0-M3</spring-ai.version>
         <hutool.version>5.8.26</hutool.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <knife4j.version>4.5.0</knife4j.version>
         <lombok.version>1.18.26</lombok.version>
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <springBoot3.porject.verion>1.0-SNAPSHOT</springBoot3.porject.verion>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+        <elasticsearch.version>7.12.1</elasticsearch.version>
     </properties>
     <dependencies>
         <dependency>
@@ -102,6 +111,11 @@
             </dependency>
             <dependency>
                 <groupId>com.example</groupId>
+                <artifactId>microservice</artifactId>
+                <version>${springBoot3.porject.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
                 <artifactId>api</artifactId>
                 <version>${springBoot3.porject.verion}</version>
             </dependency>
@@ -118,6 +132,11 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
             <!--Hutool Java工具包-->
             <dependency>

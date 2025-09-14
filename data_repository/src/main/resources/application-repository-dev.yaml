@@ -1,14 +1,14 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:mydb; # 使用内存数据库
-    #    url: jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    url: jdbc:h2:mem:mydb; # 使用内存数据库
+    url: jdbc:h2:file:../data/mydb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
     username: sa
     password: sa
     driverClassName: org.h2.Driver
   jpa:
-    #    database-platform: org.hibernate.dialect.H2Dialect  # 已经默认设置H2
+    database-platform: org.hibernate.dialect.H2Dialect  # 已经默认设置H2
     hibernate:
-      ddl-auto: none  #使用内存数据库默认create-drop
+      ddl-auto: create-drop  #使用内存数据库默认create-drop
     show-sql: true  # 显示SQL语句
     open-in-view: false
   h2:
@@ -19,4 +19,4 @@ spring:
     init:
       data-locations: classpath:db/data.sql
       schema-locations: classpath:db/schema.sql
-      mode: embedded
+      mode: always
